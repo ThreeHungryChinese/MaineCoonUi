@@ -17,7 +17,7 @@
             </md-menu-item>
             <md-menu-item lass="md-layout md-alignment-center-space-between">
                 <md-button class="md-button md-raised md-layout-item" href="">Profile</md-button>
-                <md-button class="md-button md-raised md-accent md-layout-item" href="">Sign Out</md-button>
+                <md-button class="md-button md-raised md-accent md-layout-item" @click="logout">Sign Out</md-button>
             </md-menu-item>
         </md-menu-content>
         </md-menu>
@@ -39,6 +39,9 @@ export default {
             else{
                 return 'with-message';
             }
+        },
+        logout(){
+            this.$emit('user-change',{isLoged:false})
         }
     },
     components:{

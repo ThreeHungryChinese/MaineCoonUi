@@ -1,13 +1,11 @@
 class fetchApi{
     apiAddress = 'https://localhost:44356/';
-    fetchApi(){
-    }
     fetchApi(addressString){
         this.apiAddress=addressString;
     }
     Get(requestString){
         requestString = String(requestString);
-        fetch(apiAddress+requestString,{
+        fetch(this.apiAddress+requestString,{
             credentials: 'include',
             method:'GET'
         })
@@ -28,4 +26,7 @@ class fetchApi{
               })
         })
     }
+}
+export{
+    fetchApi
 }

@@ -14,18 +14,24 @@
 </template>
 
 <script>
-import SignInDialog from './sign-in-dialog.vue'
+import SignInDialog from './sign-in-dialog'
 export default {
     name:'signin-button',
     props:['value'],
     data: () => ({
         showSigninDialog: false,
         showSignupDialog: false,
-        user:this.value
+        user:null
     }),
+    created:function(){
+        this.user=this.value;
+    },
     watch: {
         user:function(newVal, oldVal){
             this.$emit('input',newVal);
+        },
+        value:function(newVal,oldVal){
+            this.user = this.value;
         }
     },
     components:{

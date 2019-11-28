@@ -34,8 +34,8 @@
 </template>
 
 <script>
-const { required } = window.validators;
-var validationMixin = window.vuelidate.validationMixin;
+import { validationMixin } from 'vuelidate'
+const { required } = require('vuelidate/lib/validators')
 export default {
     name:'sign-in-dialog',
     mixins: [validationMixin],
@@ -82,10 +82,10 @@ export default {
 
             // Instead of this timeout, here you can call your API
             window.setTimeout(() => {
-                var f = new fetchApi();
+                var f = new window.fetchApi.fetchApi();
                 var userInfo = {};
                 userInfo['userName'] = this.form.userName;
-                userInfo['passWord'] = sha256.hmac(this.form.userName, this.form.passWord);
+                userInfo['passWord'] = window.sha256.hmac(this.form.userName, this.form.passWord);
                 var response = f.Put('Users/Login', userInfo);
                 this.sending = false;
                 response.then(r => {
