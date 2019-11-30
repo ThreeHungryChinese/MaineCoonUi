@@ -111,7 +111,7 @@ export default {
                         this.$emit('input', this.user);
                     }
                 });
-            }, 1500);
+            }, 0);
 
         },
         validateUser() {

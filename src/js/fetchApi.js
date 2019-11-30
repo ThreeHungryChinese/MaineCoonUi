@@ -4,13 +4,9 @@ class fetchApi{
         this.apiAddress=addressString;
     }
     Get(requestString){
-        requestString = String(requestString);
-        fetch(this.apiAddress+requestString,{
+        return fetch(this.apiAddress+requestString,{
             credentials: 'include',
             method:'GET'
-        })
-        .then(function(response){
-            return response;
         })
     }
     post(){
