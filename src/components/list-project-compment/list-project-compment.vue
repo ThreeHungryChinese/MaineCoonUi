@@ -15,7 +15,7 @@
                 </md-card-header>
 
                 <md-card-content>
-                    {{project.Instruction}}
+                    {{project.instruction}}
                 </md-card-content>
 
                 <md-card-expand>
@@ -26,7 +26,7 @@
                             </md-button>
                         </md-card-expand-trigger>
                         <div>
-                            <md-button class="md-button md-primary md-raised">Edit</md-button>
+                            <md-button class="md-button md-primary md-raised" @click="editProcessor(project.Id)">Edit</md-button>
                             <md-button class="md-button md-accent md-raised">Delete</md-button>
                         </div>
                     </md-card-actions>
@@ -54,7 +54,8 @@
                 </md-card-content>
             </md-card>
         </div>
-        <edit-create-processor-dialog v-on:unshowDialog="unShowCreateDialog" :showDialog="showCreateProcessorDialog"></edit-create-processor-dialog>
+        <edit-create-processor-dialog v-if="showCreateProcessorDialog" v-on:unshowDialog="showCreateProcessorDialog=false" ></edit-create-processor-dialog>
+        <edit-create-processor-dialog v-if="showEditProcessorDialog" v-on:unshowDialog="showEditProcessorDialog=false" :id="editProcessorId"></edit-create-processor-dialog>
     </div>
 </template>
 
@@ -67,6 +68,8 @@ export default {
         projects:null,
         staticCountTemp:[],
         showCreateProcessorDialog:false,
+        showEditProcessorDialog:false,
+        editProcessorId:null
     }),
     created:function(){
         const weekday = ['Sun','Mon','Tue','Wed','Thur','Fri','Sat'];
@@ -96,8 +99,9 @@ export default {
                 });
            }
        },
-       unShowCreateDialog(){
-           this.showCreateDialog = false;
+       editProcessor(id){
+           this.editProcessorId=id;
+           this.showEditProcessorDialog=true;
        }
     },
     components:{

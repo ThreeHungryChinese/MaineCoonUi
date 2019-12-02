@@ -39,7 +39,8 @@
       "vue/no-unused-vars": "warning",
       "vue/no-unused-components": "warning",
       "no-unused-vars": "off",
-      "no-undef": "off"
+      "no-undef": "off",
+      "no-console":"off"
     }
   },
   "browserslist": [
