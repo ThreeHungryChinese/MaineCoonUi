@@ -30,28 +30,32 @@
                             <md-table-row v-for="(item,index) in formResult.algorithmParameterJson" v-bind:key="index">
                                 <md-table-cell md-numeric>{{index}}</md-table-cell>
                                 <md-table-cell>
-                                    <md-field :class="getValidationClass($v.formResult.algorithmParameterJson[index].parameterName)">
+                                    <md-field :class="(isAlgorithmParameterInValid(index,'parameterName'))?'md-invalid':''">
                                         <span class="md-error md-gutter" 
-                                            v-if="!($v.formResult.algorithmParameterJson[index].parameterName.required)">
+                                            v-if="isAlgorithmParameterInValid(index,'parameterName')">
                                             This field is required.
                                         </span>
                                         <md-input :name="'parameterName' + index" :id="'parameterName' + index" 
-                                            v-model="$v.formResult.algorithmParameterJson[index].parameterName.$model" 
+                                            v-model="$v.formResult.algorithmParameterJson.$model[index].parameterName" 
                                             :disabled="formControl.sending" />
                                     </md-field>
                                 </md-table-cell>
-                                    <md-field :class="getValidationClass($v.formResult.algorithmParameterJson[index].instruction)">
+                                
+                                <md-table-cell>
+                                    <md-field :class="(isAlgorithmParameterInValid(index,'instruction'))?'md-invalid':''">
                                         <span class="md-error md-gutter" 
-                                            v-if="!($v.formResult.algorithmParameterJson[index].instruction.required)">
+                                            v-if="isAlgorithmParameterInValid(index,'instruction')">
                                             This field is required.
                                         </span>
                                         <md-input :name="'instruction' + index" :id="'instruction' + index" 
-                                            v-model="$v.formResult.algorithmParameterJson[index].instruction.$model" 
+                                            v-model="$v.formResult.algorithmParameterJson.$model[index].instruction" 
                                             :disabled="formControl.sending" />
                                     </md-field>
+                                
+                                </md-table-cell>
                                 <md-table-cell>
                                     <md-field>
-                                        <md-select v-model="formResult.algorithmParameterJson[index].type" :name="'type' + index" :id="'type' + index">
+                                        <md-select v-model="$v.formResult.algorithmParameterJson.$model[index].type" :name="'type' + index" :id="'type' + index">
                                             <md-option value="number">number</md-option>
                                             <md-option value="text">text</md-option>
                                             <md-option value="file">file</md-option>
@@ -70,19 +74,20 @@
                         </md-button>
                     </md-step>
 
-                    <md-step id="third" md-label="Third Step">
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestias doloribus eveniet quaerat modi cumque quos sed, temporibus nemo eius amet aliquid, illo minus blanditiis tempore, dolores voluptas dolore placeat nulla.</p>
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestias doloribus eveniet quaerat modi cumque quos sed, temporibus nemo eius amet aliquid, illo minus blanditiis tempore, dolores voluptas dolore placeat nulla.</p>
+                    <md-step id="third" md-label="Summary">
+                        <md-field>
+                            <md-textarea :placeholder="JSON.stringify(formResult)" :disabled="true"></md-textarea>
+                        </md-field>
                     </md-step>
                 </md-steppers>
             </md-dialog-content>
 
             <!--<pre>{{this.user}}</pre>-->
             <md-dialog-actions>
-            <md-button class="md-raised md-primary floatright" :disabled="$v.$invalid || !$v.$anyDirty" @click="nextStep()">
-                {{formControl.activated=='third'?'Submit':'Continue'}}
+            <md-button class="md-raised md-primary floatright" :disabled="$v.$invalid || !$v.$anyDirty || isAlgorithmParameterInValid()" @click="nextStep()">
+                {{(formControl.activatedStep=='third')?'Submit':'Continue'}}
             </md-button>
-            <md-button class="md-accent" @click="$emit('unshowDialog');clearForm()">Cancel</md-button>
+            <md-button class="md-accent" @click="$emit('unshowDialog')">Cancel</md-button>
             </md-dialog-actions>
             <md-progress-bar md-mode="indeterminate" v-if="sending"></md-progress-bar>
         </md-dialog>
@@ -91,6 +96,7 @@
 
 <script>
 import { validationMixin } from 'vuelidate'
+import { type } from 'os';
 const { required,url,requiredIf } = require('vuelidate/lib/validators')
 export default {
     name:'edit-create-processor-dialog',
@@ -169,12 +175,14 @@ export default {
                 url,
                 required
             },
-            algorithmParameterJson:[]
+            algorithmParameterJson:{
+                required:requiredIf(function(){
+                    return this.formControl.activatedStep=='second';
+                })
+            }
         }
     },
     methods: {
-        clearForm(){
-        },
         nextStep(){
             this.$v.formResult.$touch();
             if (this.$v.$invalid) return;
@@ -188,7 +196,7 @@ export default {
             }
         },
         submit(){
-
+            
         },
         getValidationClass(validation) {
             return {
@@ -196,21 +204,34 @@ export default {
             }
         },
         addParameter(){
-            this.formResult.algorithmParameterJson.push({
+            /*this.formResult.algorithmParameterJson.push({
                 parameterName:null,
                 instruction:null,
                 type:'text'
             });
-            return;
-            this.validations.algorithmParameterJson.push({
-                parameterName:required,
-                instruction:required,
+            */
+            this.$v.formResult.algorithmParameterJson.$model.push({
+                parameterName:null,
+                instruction:null,
+                type:'text'
             })
 
         },
         deleteParameter(index){
-            this.formResult.algorithmParameterJson.splice(index,1);
-            this.validations.formResult.algorithmParameterJson.splice(index,1);
+            //this.formResult.algorithmParameterJson.splice(index,1);
+            this.$v.formResult.algorithmParameterJson.$model.splice(index,1);
+        },
+        isAlgorithmParameterInValid(index=-1,name=''){
+            if(index!=-1){
+                if(this.formResult.algorithmParameterJson[index][name]==null)return true;
+            }
+            else{
+                if(this.formControl.activatedStep=='second')
+                    for(var itemIndex in this.formResult.algorithmParameterJson)
+                        for(var parameterIndex in this.formResult.algorithmParameterJson[itemIndex])
+                            if(this.formResult.algorithmParameterJson[itemIndex][parameterIndex]==null) return true;
+            }
+            return false;
         }
     },
     mounted:function(){
