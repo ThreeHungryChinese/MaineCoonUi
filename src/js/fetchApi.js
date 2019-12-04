@@ -29,6 +29,16 @@ class fetchApi{
               })
         })
     }
+    Delete(requestString,data){
+        return fetch(this.apiAddress+requestString,{
+            credentials: 'include',
+            method:'DELETE',
+            body:JSON.stringify(data),  
+            headers: new Headers({
+                'Content-Type': 'application/json'
+              })
+        })
+    }
 }
 export{
     fetchApi

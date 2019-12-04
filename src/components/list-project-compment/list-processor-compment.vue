@@ -5,7 +5,7 @@
         md-icon="devices_other"
         md-label="Create your first processor"
         md-description="Creating processor, you'll be able to do something.">
-            <md-button class="md-primary md-raised" >Create first processor</md-button>
+            <md-button class="md-primary md-raised" @click="showCreateProcessorDialog=true">Create first processor</md-button>
         </md-empty-state>
         <div v-if="processors!=null" class="md-alyout md-alignment-top-space-around">
             <md-card class="md-layout-item md-gutter" v-for="processor in processors" v-bind:key="processor.Id">
@@ -26,8 +26,10 @@
                             </md-button>
                         </md-card-expand-trigger>
                         <div>
-                            <md-button class="md-button md-primary md-raised" @click="editProcessor(processor.Id)">Edit</md-button>
-                            <md-button class="md-button md-accent md-raised">Delete</md-button>
+                            <md-button class="md-button md-primary md-raised" 
+                                @click="editProcessor(processor.Id)">Edit</md-button>
+                            <md-button class="md-button md-accent md-raised" 
+                                @click="deletingProcessorId=processor.Id;showWarningDialog=true;">Delete</md-button>
                         </div>
                     </md-card-actions>
                     <md-card-expand-content>
@@ -61,13 +63,22 @@
         <edit-create-processor-dialog 
             v-if="showEditProcessorDialog" 
             v-on:unshowDialog="showEditProcessorDialog=false" 
-            v-on:actionOk="refreshContent"
+            v-on:actionOk="refreshContent();
+            this.$emit('notification','Your algorithm is saved.')"
             :id="editProcessorId" />
+        <warning-dialog
+            :showDialog.sync="showWarningDialog"
+            title="Are you sure to delete it"
+            content="This action cannot undo"
+            confirmText="Comfirm"
+            cancelText="Cancel"
+            @onConfirm="deleteProcessor"/>
     </div>
 </template>
 
 <script>
 import EditCreateProcessorDialog from './edit-create-processor-dialog'
+import WarningDialog from './warning-dialog'
 export default {
     name:'list-processor-compment',
     props:['user'],
@@ -76,7 +87,9 @@ export default {
         staticCountTemp:[],
         showCreateProcessorDialog:false,
         showEditProcessorDialog:false,
-        editProcessorId:null
+        showWarningDialog:false,
+        editProcessorId:null,
+        deletingProcessorId:null
     }),
     created:function(){
         const weekday = ['Sun','Mon','Tue','Wed','Thur','Fri','Sat'];
@@ -110,15 +123,24 @@ export default {
            this.editProcessorId=id;
            this.showEditProcessorDialog=true;
        },
+       deleteProcessor(){
+           var f = new window.fetchApi.fetchApi();
+           var response = f.Delete('Processors/'+this.deletingProcessorId);
+                response.then(r =>{
+                    if(r.status==200){
+                        this.$emit('notification',"Your algorithm is deleted");
+                        this.refreshContent();
+                    }
+                });
+       },
        refreshContent(){
            this.getUsersprocessors(this.user);
            this.showCreateProcessorDialog=false;
            this.showEditProcessorDialog=false;
-           this.$emit('notification','Your algorithm is saved.')
        }
     },
     components:{
-        EditCreateProcessorDialog
+        EditCreateProcessorDialog,WarningDialog
     }
 }
 </script>

@@ -43,14 +43,6 @@
         <md-snackbar md-position="center" :md-duration="snackBar.duration" :md-active.sync="snackBar.show" md-persistent>
           <span>{{snackBar.info}}</span>
         </md-snackbar>
-        <md-dialog-confirm
-          :md-active.sync="deleting"
-          md-title="Are you sure to Delete this Processor?"
-          md-content="This action Cannot undo!"
-          md-confirm-text="Agree"
-          md-cancel-text="Disagree"
-          @md-cancel="onCancel"
-          @md-confirm="onConfirm" />
       </md-app-content>
   </md-app>
 </template>
