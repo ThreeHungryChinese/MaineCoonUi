@@ -9,8 +9,15 @@ class fetchApi{
             method:'GET'
         })
     }
-    post(){
-
+    Post(requestString,data){
+        return fetch(this.apiAddress+requestString,{
+            credentials: 'include',
+            method:'POST',
+            body:JSON.stringify(data),  
+            headers: new Headers({
+                'Content-Type': 'application/json'
+              })
+        })
     }
     Put(requestString,data){
         return fetch(this.apiAddress+requestString,{

@@ -1,21 +1,21 @@
 <template>
     <div>
         <md-empty-state
-        v-if="projects==null"
+        v-if="processors==null"
         md-icon="devices_other"
-        md-label="Create your first project"
-        md-description="Creating project, you'll be able to do something.">
-            <md-button class="md-primary md-raised" >Create first project</md-button>
+        md-label="Create your first processor"
+        md-description="Creating processor, you'll be able to do something.">
+            <md-button class="md-primary md-raised" >Create first processor</md-button>
         </md-empty-state>
-        <div v-if="projects!=null" class="md-alyout md-alignment-top-space-around">
-            <md-card class="md-layout-item md-gutter" v-for="project in projects" v-bind:key="project.Id">
+        <div v-if="processors!=null" class="md-alyout md-alignment-top-space-around">
+            <md-card class="md-layout-item md-gutter" v-for="processor in processors" v-bind:key="processor.Id">
                 <md-card-header>
-                    <div class="md-title">{{project.friendlyName}}</div>
-                    <div class="md-subhead">Has been Called: {{project.count}} times</div>
+                    <div class="md-title">{{processor.friendlyName}}</div>
+                    <div class="md-subhead">Has been Called: {{processor.count}} times</div>
                 </md-card-header>
 
                 <md-card-content>
-                    {{project.instruction}}
+                    {{processor.instruction}}
                 </md-card-content>
 
                 <md-card-expand>
@@ -26,7 +26,7 @@
                             </md-button>
                         </md-card-expand-trigger>
                         <div>
-                            <md-button class="md-button md-primary md-raised" @click="editProcessor(project.Id)">Edit</md-button>
+                            <md-button class="md-button md-primary md-raised" @click="editProcessor(processor.Id)">Edit</md-button>
                             <md-button class="md-button md-accent md-raised">Delete</md-button>
                         </div>
                     </md-card-actions>
@@ -54,18 +54,25 @@
                 </md-card-content>
             </md-card>
         </div>
-        <edit-create-processor-dialog v-if="showCreateProcessorDialog" v-on:unshowDialog="showCreateProcessorDialog=false" ></edit-create-processor-dialog>
-        <edit-create-processor-dialog v-if="showEditProcessorDialog" v-on:unshowDialog="showEditProcessorDialog=false" :id="editProcessorId"></edit-create-processor-dialog>
+        <edit-create-processor-dialog 
+            v-if="showCreateProcessorDialog" 
+            v-on:unshowDialog="showCreateProcessorDialog=false" 
+            v-on:actionOk="refreshContent" />
+        <edit-create-processor-dialog 
+            v-if="showEditProcessorDialog" 
+            v-on:unshowDialog="showEditProcessorDialog=false" 
+            v-on:actionOk="refreshContent"
+            :id="editProcessorId" />
     </div>
 </template>
 
 <script>
 import EditCreateProcessorDialog from './edit-create-processor-dialog'
 export default {
-    name:'list-project-compment',
+    name:'list-processor-compment',
     props:['user'],
     data:()=>({
-        projects:null,
+        processors:null,
         staticCountTemp:[],
         showCreateProcessorDialog:false,
         showEditProcessorDialog:false,
@@ -82,10 +89,10 @@ export default {
             }
             this.staticCountTemp.unshift(temp);
         }
-        this.getUsersProjects(this.user);
+        this.getUsersprocessors(this.user);
     },
     methods: {
-       getUsersProjects(user){
+       getUsersprocessors(user){
            if(user.isLoged){
                 var f = new window.fetchApi.fetchApi();
                 var getTarget = (user.sysRole == 'Developer'? 'Processors/Users/' : 'UniversityPrograms/Users/');
@@ -93,7 +100,7 @@ export default {
                 response.then(r =>{
                     if(r.status==200){
                         r.json().then(body=>{
-                            this.projects=body;
+                            this.processors=body;
                         });
                     }
                 });
@@ -102,6 +109,12 @@ export default {
        editProcessor(id){
            this.editProcessorId=id;
            this.showEditProcessorDialog=true;
+       },
+       refreshContent(){
+           this.getUsersprocessors(this.user);
+           this.showCreateProcessorDialog=false;
+           this.showEditProcessorDialog=false;
+           this.$emit('notification','Your algorithm is saved.')
        }
     },
     components:{

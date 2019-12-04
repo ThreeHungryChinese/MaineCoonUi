@@ -10,7 +10,7 @@
 
             <md-list-item @click="menuVisible=false">
               <md-icon>devices_other</md-icon>
-              <span class="md-list-item-text">Projects</span>
+              <span class="md-list-item-text">processors</span>
             </md-list-item>
 
             <md-list-item @click="menuVisible=false">
@@ -39,7 +39,18 @@
       </md-app-toolbar>
       <md-app-content>
         <boot-screen v-if="!(user.isLoged)"></boot-screen>
-        <list-project-compment :user="user" v-if="user.isLoged"></list-project-compment>
+        <list-processor-compment :user="user" v-if="user.isLoged" v-on:notification="showSnackBar"></list-processor-compment>
+        <md-snackbar md-position="center" :md-duration="snackBar.duration" :md-active.sync="snackBar.show" md-persistent>
+          <span>{{snackBar.info}}</span>
+        </md-snackbar>
+        <md-dialog-confirm
+          :md-active.sync="deleting"
+          md-title="Are you sure to Delete this Processor?"
+          md-content="This action Cannot undo!"
+          md-confirm-text="Agree"
+          md-cancel-text="Disagree"
+          @md-cancel="onCancel"
+          @md-confirm="onConfirm" />
       </md-app-content>
   </md-app>
 </template>
@@ -47,7 +58,7 @@
 <script>
 import BootScreen from './components/boot-screen'
 import LoginCompment from './components/login-compment/login-compment'
-import ListProjectCompment from './components/list-project-compment/list-project-compment'
+import ListProcessorCompment from './components/list-project-compment/list-processor-compment'
 export default {
   name: 'app',
   data:()=>({
@@ -58,13 +69,25 @@ export default {
       userName: null,
       userId: null,
       sysRole: null
-    }
+    },
+    snackBar:{
+      info:null,
+      show:false,
+      duration:4000
+    },
+    deleting:false
   }),
   components: {
     BootScreen,
     LoginCompment,
-    ListProjectCompment
-  }
+    ListProcessorCompment
+  },
+  methods: {
+    showSnackBar(info){ 
+      this.snackBar.show=true;
+      this.snackBar.info=info;
+    }
+  },
 }
 </script>
 

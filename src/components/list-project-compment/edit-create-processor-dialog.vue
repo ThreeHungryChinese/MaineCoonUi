@@ -151,7 +151,7 @@ export default {
             resetURL:null,
             getResultURL:null,
             isGetResultNeedWaitCallback:false,
-            TLSversion:'TLSv1_2',
+            TLSversion:1,
             algorithmParameterJson:[]
         }
     }),
@@ -196,7 +196,26 @@ export default {
             }
         },
         submit(){
-            
+            var f = new window.fetchApi.fetchApi();
+            if(this.isEdit){
+                f.Put('Processors/' + this.id,this.formResult).then(r=>{
+                    if(!r.ok){
+                        alert("error occured!");
+                    }
+                    else{
+                        this.$emit('actionOk')
+                    }
+                });
+            } else{
+                f.Post('Processors/Create',this.formResult).then(r=>{
+                    if(!r.ok){
+                        alert("error occured!");
+                    }
+                    else{
+                        this.$emit('actionOk')
+                    }
+                });
+            }
         },
         getValidationClass(validation) {
             return {
@@ -241,6 +260,7 @@ export default {
             var f = new window.fetchApi.fetchApi();
             f.Get('Processors/Details/' + this.id).then(r=>{
                 if(!r.ok){
+                    alert("error occured!");
                     //console.log('fetch Error!');
                     this.$emit('unShowDialog');
                 }
@@ -248,7 +268,7 @@ export default {
                     r.json().then(responseBody=>{
                         console.log(responseBody);
                         if(responseBody.length==0){
-                            this.$emit('unShowDialog');
+                            this.$emit('unshowDialog');
                         }
                         for(var key in this.formResult){
                             this.formResult[key] = responseBody[0][key];

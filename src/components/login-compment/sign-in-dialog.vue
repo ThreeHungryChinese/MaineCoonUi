@@ -87,8 +87,8 @@ export default {
                 userInfo['userName'] = this.form.userName;
                 userInfo['passWord'] = window.sha256.hmac(this.form.userName, this.form.passWord);
                 var response = f.Put('Users/Login', userInfo);
-                this.sending = false;
                 response.then(r => {
+                    this.sending = false;
                     if (!r.ok) {
                         if(r.status!=403){
                             this.incorrectPassword = true;
