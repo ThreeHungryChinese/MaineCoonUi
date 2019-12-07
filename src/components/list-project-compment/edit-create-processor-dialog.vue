@@ -21,57 +21,10 @@
                     </md-step>
 
                     <md-step id="second" md-label="Parameters">
-                        <md-table>
-                            <md-table-head md-numeric>ID</md-table-head>
-                            <md-table-head>Parameter Name</md-table-head>
-                            <md-table-head>Instruction</md-table-head>
-                            <md-table-head>Type</md-table-head>
-                            <md-table-head>Delete</md-table-head>
-                            <md-table-row v-for="(item,index) in formResult.algorithmParameterJson" v-bind:key="index">
-                                <md-table-cell md-numeric>{{index}}</md-table-cell>
-                                <md-table-cell>
-                                    <md-field :class="(isAlgorithmParameterInValid(index,'parameterName'))?'md-invalid':''">
-                                        <span class="md-error md-gutter" 
-                                            v-if="isAlgorithmParameterInValid(index,'parameterName')">
-                                            This field is required.
-                                        </span>
-                                        <md-input :name="'parameterName' + index" :id="'parameterName' + index" 
-                                            v-model="$v.formResult.algorithmParameterJson.$model[index].parameterName" 
-                                            :disabled="formControl.sending" />
-                                    </md-field>
-                                </md-table-cell>
-                                
-                                <md-table-cell>
-                                    <md-field :class="(isAlgorithmParameterInValid(index,'instruction'))?'md-invalid':''">
-                                        <span class="md-error md-gutter" 
-                                            v-if="isAlgorithmParameterInValid(index,'instruction')">
-                                            This field is required.
-                                        </span>
-                                        <md-input :name="'instruction' + index" :id="'instruction' + index" 
-                                            v-model="$v.formResult.algorithmParameterJson.$model[index].instruction" 
-                                            :disabled="formControl.sending" />
-                                    </md-field>
-                                
-                                </md-table-cell>
-                                <md-table-cell>
-                                    <md-field>
-                                        <md-select v-model="$v.formResult.algorithmParameterJson.$model[index].type" :name="'type' + index" :id="'type' + index">
-                                            <md-option value="number">number</md-option>
-                                            <md-option value="text">text</md-option>
-                                            <md-option value="file">file</md-option>
-                                        </md-select>
-                                    </md-field>
-                                </md-table-cell>
-                                <md-table-cell>
-                                    <md-button class="md-fab md-primary md-mini" @click="deleteParameter(index)">
-                                        <md-icon>clear</md-icon>
-                                    </md-button>
-                                </md-table-cell>
-                            </md-table-row>
-                        </md-table>
-                        <md-button class="md-fab md-primary md-mini" style="float: right;" @click="addParameter">
-                            <md-icon>add</md-icon>
-                        </md-button>
+                        <parameter-edit-table 
+                            :parameters.sync="formResult.algorithmParameterJson"
+                            :sending="sending"
+                            />
                     </md-step>
 
                     <md-step id="third" md-label="Summary">
@@ -97,6 +50,7 @@
 <script>
 import { validationMixin } from 'vuelidate'
 import { type } from 'os';
+import ParameterEditTable from './parameter-edit-table'
 const { required,url,requiredIf } = require('vuelidate/lib/validators')
 export default {
     name:'edit-create-processor-dialog',
@@ -222,42 +176,12 @@ export default {
                 'md-invalid': validation.$invalid && validation.$dirty
             }
         },
-        addParameter(){
-            /*this.formResult.algorithmParameterJson.push({
-                parameterName:null,
-                instruction:null,
-                type:'text'
-            });
-            */
-            this.$v.formResult.algorithmParameterJson.$model.push({
-                parameterName:null,
-                instruction:null,
-                type:'text'
-            })
-
-        },
-        deleteParameter(index){
-            //this.formResult.algorithmParameterJson.splice(index,1);
-            this.$v.formResult.algorithmParameterJson.$model.splice(index,1);
-        },
-        isAlgorithmParameterInValid(index=-1,name=''){
-            try{
-                if(index!=-1){
-                    if(this.formResult.algorithmParameterJson[index][name]=="" ||
-                     this.formResult.algorithmParameterJson[index][name]==null)return true;
-                }
-                else{
-                    if(this.formControl.activatedStep=='second')
-                        for(var itemIndex in this.formResult.algorithmParameterJson)
-                            for(var parameterIndex in this.formResult.algorithmParameterJson[itemIndex])
-                                if(this.formResult.algorithmParameterJson[itemIndex][parameterIndex]=="" ||
-                                    this.formResult.algorithmParameterJson[itemIndex][parameterIndex]==null) return true;
-                }
-                return false;
-            }
-            catch{
-                return true;
-            }
+        isAlgorithmParameterInValid(){
+            if(this.formControl.activatedStep=='second')
+                for(var itemIndex in this.formResult.algorithmParameterJson)
+                    for(var parameterIndex in this.formResult.algorithmParameterJson[itemIndex])
+                        if(this.formResult.algorithmParameterJson[itemIndex][parameterIndex]=="" ||
+                            this.formResult.algorithmParameterJson[itemIndex][parameterIndex]==null) return true;
         }
     },
     mounted:function(){
@@ -285,6 +209,9 @@ export default {
                 }
             });
         }
+    },
+    components:{
+        ParameterEditTable
     }
 }
 </script>
