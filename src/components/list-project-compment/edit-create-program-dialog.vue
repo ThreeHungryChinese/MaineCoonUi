@@ -14,10 +14,6 @@
                             <md-input :name="name" :id="name" v-model="$v.formResult[name].$model" :disabled="formControl.sending" />
                             <span class="md-helper-text">{{value.instruction}}</span>
                         </md-field>
-                        <md-switch class="md-accent md-gutter" name="isGetResultNeedWaitCallback" id="isGetResultNeedWaitCallback" 
-                        v-model="formResult.isGetResultNeedWaitCallback" :disabled="formControl.sending">
-                            {{formInfo.isGetResultNeedWaitCallback.instruction}}
-                        </md-switch>
                     </md-step>
 
                     <md-step id="second" md-label="Parameters">
@@ -27,35 +23,35 @@
                             <md-table-head>Instruction</md-table-head>
                             <md-table-head>Type</md-table-head>
                             <md-table-head>Delete</md-table-head>
-                            <md-table-row v-for="(item,index) in formResult.algorithmParameterJson" v-bind:key="index">
+                            <md-table-row v-for="(item,index) in formResult.ProgramParameterJson" v-bind:key="index">
                                 <md-table-cell md-numeric>{{index}}</md-table-cell>
                                 <md-table-cell>
-                                    <md-field :class="(isAlgorithmParameterInValid(index,'parameterName'))?'md-invalid':''">
+                                    <md-field :class="(isprogramParameterInValid(index,'parameterName'))?'md-invalid':''">
                                         <span class="md-error md-gutter" 
                                             v-if="isAlgorithmParameterInValid(index,'parameterName')">
                                             This field is required.
                                         </span>
                                         <md-input :name="'parameterName' + index" :id="'parameterName' + index" 
-                                            v-model="$v.formResult.algorithmParameterJson.$model[index].parameterName" 
+                                            v-model="$v.formResult.ProgramParameterJson.$model[index].parameterName" 
                                             :disabled="formControl.sending" />
                                     </md-field>
                                 </md-table-cell>
                                 
                                 <md-table-cell>
-                                    <md-field :class="(isAlgorithmParameterInValid(index,'instruction'))?'md-invalid':''">
+                                    <md-field :class="(isprogramParameterInValid(index,'instruction'))?'md-invalid':''">
                                         <span class="md-error md-gutter" 
-                                            v-if="isAlgorithmParameterInValid(index,'instruction')">
+                                            v-if="isprogramParameterInValid(index,'instruction')">
                                             This field is required.
                                         </span>
                                         <md-input :name="'instruction' + index" :id="'instruction' + index" 
-                                            v-model="$v.formResult.algorithmParameterJson.$model[index].instruction" 
+                                            v-model="$v.formResult.ProgramParameterJson.$model[index].instruction" 
                                             :disabled="formControl.sending" />
                                     </md-field>
                                 
                                 </md-table-cell>
                                 <md-table-cell>
                                     <md-field>
-                                        <md-select v-model="$v.formResult.algorithmParameterJson.$model[index].type" :name="'type' + index" :id="'type' + index">
+                                        <md-select v-model="$v.formResult.ProgramParameterJson.$model[index].type" :name="'type' + index" :id="'type' + index">
                                             <md-option value="number">number</md-option>
                                             <md-option value="text">text</md-option>
                                             <md-option value="file">file</md-option>
@@ -99,14 +95,14 @@ import { validationMixin } from 'vuelidate'
 import { type } from 'os';
 const { required,url,requiredIf } = require('vuelidate/lib/validators')
 export default {
-    name:'edit-create-processor-dialog',
+    name:'edit-create-program-dialog',
     mixins: [validationMixin],
     props:['id'],
     data:()=>({
         showDialog:true,
         sending:false,
         isEdit:false,
-        editingProcessorId:null,
+        editingProgramId:null,
         formControl:{
             sending:false,    
             activatedStep:'first',
@@ -119,66 +115,31 @@ export default {
         },
         formInfo:{
             generateField:{
-                friendlyName:{
+                ProgramName:{
                     title:'Name',
-                    instruction:'Give a name of your Algorithm'
+                    instruction:'Give a name of your Program'
                 },
-                instruction:{
+                ProgramIntroduction:{
                     title:'instruction',
                     instruction:'Give some instuctions to your users'
-                },
-                trainCallbackURL:{
-                    title:'Training callback URL',
-                    instruction:'the url to start training your algorithm'
-                },
-                resetURL:{
-                    title:'Reset Algorithm URL',
-                    instruction:'the url to reset your Algorithm'
-                },
-                getResultURL:{
-                    title:'Get Result URL',
-                    instruction:'the url to get an output from your Algorithm'
                 }
-            },
-            isGetResultNeedWaitCallback:{
-                instruction:'Will this algorithm give a result in a callback request rather than in http response?'
             }
         },
         formResult:{
-            friendlyName:null,
-            instruction:null,
-            trainCallbackURL:null,
-            resetURL:null,
-            getResultURL:null,
-            isGetResultNeedWaitCallback:false,
-            TLSversion:1,
-            algorithmParameterJson:[]
+            ProgramName:null,
+            ProgramIntroduction:null,
+            ProgramJson:null,
+            UsedProcessorsIdJson:null,
+            ProgramParameterJson:null
         }
     }),
     validations: {
         formResult: {
-            friendlyName: {
+            ProgramName: {
                 required
             },
-            instruction:{
+            ProgramIntroduction:{
                 required
-            },
-            trainCallbackURL:{
-                url,
-                required
-            },
-            resetURL:{
-                url,
-                required
-            },
-            getResultURL:{
-                url,
-                required
-            },
-            algorithmParameterJson:{
-                required:requiredIf(function(){
-                    return this.formControl.activatedStep=='second';
-                })
             }
         }
     },
@@ -198,7 +159,7 @@ export default {
         submit(){
             var f = new window.fetchApi.fetchApi();
             if(this.isEdit){
-                f.Put('Processors/' + this.id,this.formResult).then(r=>{
+                f.Put('Programs/' + this.id,this.formResult).then(r=>{
                     if(!r.ok){
                         alert("error occured!");
                     }
@@ -207,7 +168,7 @@ export default {
                     }
                 });
             } else{
-                f.Post('Processors/Create',this.formResult).then(r=>{
+                f.Post('Programs/Create',this.formResult).then(r=>{
                     if(!r.ok){
                         alert("error occured!");
                     }
@@ -223,35 +184,28 @@ export default {
             }
         },
         addParameter(){
-            /*this.formResult.algorithmParameterJson.push({
+            this.$v.formResult.ProgramParameterJson.$model.push({
                 parameterName:null,
-                instruction:null,
-                type:'text'
-            });
-            */
-            this.$v.formResult.algorithmParameterJson.$model.push({
-                parameterName:null,
-                instruction:null,
-                type:'text'
+                programIntroduction:null,
+                type:'number'
             })
 
         },
         deleteParameter(index){
-            //this.formResult.algorithmParameterJson.splice(index,1);
-            this.$v.formResult.algorithmParameterJson.$model.splice(index,1);
+            this.$v.formResult.ProgramParameterJson.$model.splice(index,1);
         },
         isAlgorithmParameterInValid(index=-1,name=''){
             try{
                 if(index!=-1){
-                    if(this.formResult.algorithmParameterJson[index][name]=="" ||
-                     this.formResult.algorithmParameterJson[index][name]==null)return true;
+                    if(this.formResult.ProgramParameterJson[index][name]=="" ||
+                     this.formResult.ProgramParameterJson[index][name]==null)return true;
                 }
                 else{
                     if(this.formControl.activatedStep=='second')
-                        for(var itemIndex in this.formResult.algorithmParameterJson)
-                            for(var parameterIndex in this.formResult.algorithmParameterJson[itemIndex])
-                                if(this.formResult.algorithmParameterJson[itemIndex][parameterIndex]=="" ||
-                                    this.formResult.algorithmParameterJson[itemIndex][parameterIndex]==null) return true;
+                        for(var itemIndex in this.formResult.ProgramParameterJson)
+                            for(var parameterIndex in this.formResult.ProgramParameterJson[itemIndex])
+                                if(this.formResult.ProgramParameterJson[itemIndex][parameterIndex]=="" ||
+                                    this.formResult.ProgramParameterJson[itemIndex][parameterIndex]==null) return true;
                 }
                 return false;
             }
@@ -265,7 +219,7 @@ export default {
             //this is an edit dialog
             this.isEdit=true;
             var f = new window.fetchApi.fetchApi();
-            f.Get('Processors/Details/' + this.id).then(r=>{
+            f.Get('UniversityPrograms/Details/' + this.id).then(r=>{
                 if(!r.ok){
                     alert("error occured!");
                     //console.log('fetch Error!');
@@ -280,7 +234,7 @@ export default {
                         for(var key in this.formResult){
                             this.formResult[key] = responseBody[0][key];
                         }
-                        this.editingProcessorId = responseBody[0]['id'];
+                        this.editingProgramId = responseBody[0]['id'];
                     })
                 }
             });

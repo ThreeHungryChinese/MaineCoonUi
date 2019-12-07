@@ -1,21 +1,22 @@
 <template>
     <div>
         <md-empty-state
-        v-if="processors==null"
+        v-if="programs==null"
+        description="program"
         md-icon="devices_other"
-        md-label="Create your first processor"
-        md-description="Creating processor, you'll be able to do something.">
-            <md-button class="md-primary md-raised" @click="showCreateProcessorDialog=true">Create first processor</md-button>
+        md-label="Create your first program"
+        md-description="Creating program, you'll be able to do something.">
+            <md-button class="md-primary md-raised" @click="showCreateProgramDialog=true">Create first program</md-button>
         </md-empty-state>
-        <div v-if="processors!=null" class="md-alyout md-alignment-top-space-around">
-            <md-card class="md-layout-item md-gutter" v-for="processor in processors" v-bind:key="processor.Id">
+        <div v-if="programs!=null" class="md-alyout md-alignment-top-space-around">
+            <md-card class="md-layout-item md-gutter" v-for="program in programs" v-bind:key="program.Id">
                 <md-card-header>
-                    <div class="md-title">{{processor.friendlyName}}</div>
-                    <div class="md-subhead">Has been Called: {{processor.count}} times</div>
+                    <div class="md-title">{{program.ProgramName}}</div>
+                    <div class="md-subhead">Has been Called: {{program.Count}} times</div>
                 </md-card-header>
 
                 <md-card-content>
-                    {{processor.instruction}}
+                    {{program.ProgramIntroduction}}
                 </md-card-content>
 
                 <md-card-expand>
@@ -27,9 +28,9 @@
                         </md-card-expand-trigger>
                         <div>
                             <md-button class="md-button md-primary md-raised" 
-                                @click="editProcessor(processor.Id)">Edit</md-button>
+                                @click="editProgram(program.Id)">Edit</md-button>
                             <md-button class="md-button md-accent md-raised" 
-                                @click="deletingProcessorId=processor.Id;showWarningDialog=true;">Delete</md-button>
+                                @click="deletingProgramId=program.Id;showWarningDialog=true;">Delete</md-button>
                         </div>
                     </md-card-actions>
                     <md-card-expand-content>
@@ -50,46 +51,46 @@
                 </md-card-header>
                 
                 <md-card-content>
-                    <md-button class="md-button md-raised md-icon-button" style="float:right" @click="showCreateProcessorDialog=true">
+                    <md-button class="md-button md-raised md-icon-button" style="float:right" @click="showCreateProgramDialog=true">
                         <md-icon>plus_one</md-icon>
                     </md-button>
                 </md-card-content>
             </md-card>
         </div>
-        <edit-create-processor-dialog 
-            v-if="showCreateProcessorDialog" 
-            v-on:unshowDialog="showCreateProcessorDialog=false" 
+        <edit-create-program-dialog 
+            v-if="showCreateProgramDialog" 
+            v-on:unshowDialog="showCreateProgramDialog=false" 
             v-on:actionOk="refreshContent" />
-        <edit-create-processor-dialog 
-            v-if="showEditProcessorDialog" 
-            v-on:unshowDialog="showEditProcessorDialog=false" 
+        <edit-create-program-dialog 
+            v-if="showEditProgramDialog" 
+            v-on:unshowDialog="showEditProgramDialog=false" 
             v-on:actionOk="refreshContent();
-            this.$emit('notification','Your algorithm is saved.')"
-            :id="editProcessorId" />
+            this.$emit('notification','Your program is saved.')"
+            :id="editProgramId" />
         <warning-dialog
             :showDialog.sync="showWarningDialog"
             title="Are you sure to delete it"
             content="This action cannot undo"
             confirmText="Comfirm"
             cancelText="Cancel"
-            @onConfirm="deleteProcessor"/>
+            @onConfirm="deleteProgram"/>
     </div>
 </template>
 
 <script>
-import EditCreateProcessorDialog from './edit-create-processor-dialog'
+import EditCreateProgramDialog from './edit-create-program-dialog'
 import WarningDialog from './warning-dialog'
 export default {
-    name:'list-processor-compment',
+    name:'list-program-compment',
     props:['user'],
     data:()=>({
-        processors:null,
+        programs:null,
         staticCountTemp:[],
-        showCreateProcessorDialog:false,
-        showEditProcessorDialog:false,
+        showCreateProgramDialog:false,
+        showEditProgramDialog:false,
         showWarningDialog:false,
-        editProcessorId:null,
-        deletingProcessorId:null
+        editProgramId:null,
+        deletingProgramId:null
     }),
     created:function(){
         const weekday = ['Sun','Mon','Tue','Wed','Thur','Fri','Sat'];
@@ -102,45 +103,45 @@ export default {
             }
             this.staticCountTemp.unshift(temp);
         }
-        this.getUsersprocessors(this.user);
+        this.getUsersprograms(this.user);
     },
     methods: {
-       getUsersprocessors(user){
+       getUsersprograms(user){
            if(user.isLoged){
                 var f = new window.fetchApi.fetchApi();
-                var getTarget = 'Processors/Users/';
+                var getTarget = 'UniversityPrograms/Users/';
                 var response = f.Get(getTarget + user.userId);
                 response.then(r =>{
                     if(r.status==200){
                         r.json().then(body=>{
-                            this.processors=body;
+                            this.programs=body;
                         });
                     }
                 });
            }
        },
-       editProcessor(id){
-           this.editProcessorId=id;
-           this.showEditProcessorDialog=true;
+       editProgram(id){
+           this.editProgramId=id;
+           this.showEditProgramDialog=true;
        },
-       deleteProcessor(){
+       deleteProgram(){
            var f = new window.fetchApi.fetchApi();
-           var response = f.Delete('Processors/'+this.deletingProcessorId);
+           var response = f.Delete('UniversityPrograms/'+this.deletingProgramId);
                 response.then(r =>{
                     if(r.status==200){
-                        this.$emit('notification',"Your algorithm is deleted");
+                        this.$emit('notification',"Your program is deleted");
                         this.refreshContent();
                     }
                 });
        },
        refreshContent(){
-           this.getUsersprocessors(this.user);
-           this.showCreateProcessorDialog=false;
-           this.showEditProcessorDialog=false;
+           this.getUsersprograms(this.user);
+           this.showCreateProgramDialog=false;
+           this.showEditProgramDialog=false;
        }
     },
     components:{
-        EditCreateProcessorDialog,WarningDialog
+        EditCreateProgramDialog,WarningDialog
     }
 }
 </script>

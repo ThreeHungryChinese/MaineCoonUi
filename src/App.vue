@@ -39,7 +39,15 @@
       </md-app-toolbar>
       <md-app-content>
         <boot-screen v-if="!(user.isLoged)"></boot-screen>
-        <list-processor-compment :user="user" v-if="user.isLoged" v-on:notification="showSnackBar"></list-processor-compment>
+        <list-processor-compment :user="user" 
+          v-if="user.isLoged && user.sysRole=='Developer'" 
+          v-on:notification="showSnackBar">
+        </list-processor-compment>
+
+        <list-program-compment :user="user"
+          v-if="user.isLoged && user.sysRole=='SchoolAdmin'" 
+          @notification="showSnackBar"/>
+          
         <md-snackbar md-position="center" :md-duration="snackBar.duration" :md-active.sync="snackBar.show" md-persistent>
           <span>{{snackBar.info}}</span>
         </md-snackbar>
@@ -51,6 +59,7 @@
 import BootScreen from './components/boot-screen'
 import LoginCompment from './components/login-compment/login-compment'
 import ListProcessorCompment from './components/list-project-compment/list-processor-compment'
+import ListProgramCompment from './components/list-project-compment/list-program-compment'
 export default {
   name: 'app',
   data:()=>({
@@ -72,7 +81,8 @@ export default {
   components: {
     BootScreen,
     LoginCompment,
-    ListProcessorCompment
+    ListProcessorCompment,
+    ListProgramCompment
   },
   methods: {
     showSnackBar(info){ 
