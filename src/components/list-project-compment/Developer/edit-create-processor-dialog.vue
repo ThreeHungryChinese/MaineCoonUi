@@ -1,7 +1,7 @@
 <template>
       <div>
         <md-dialog @md-closed="$emit('unshowDialog')" :md-active.sync="showDialog" style="width: 60vw;">
-            <md-dialog-title>New Algorithm</md-dialog-title>
+            <md-dialog-title>{{isEdit?'Edit':'New'}} Algorithm</md-dialog-title>
             <md-dialog-content class="md-gutter">
                 <md-steppers md-alternative md-linear :md-active-step.sync="formControl.activatedStep" style="max-width:55vw" >
                     <md-step id="first" md-label="Basic Information" :md-done.sync="formControl.stepsReady.first">
@@ -50,7 +50,7 @@
 <script>
 import { validationMixin } from 'vuelidate'
 import { type } from 'os';
-import ParameterEditTable from './parameter-edit-table'
+import ParameterEditTable from '../parameter-edit-table'
 const { required,url,requiredIf } = require('vuelidate/lib/validators')
 export default {
     name:'edit-create-processor-dialog',
@@ -182,6 +182,7 @@ export default {
                     for(var parameterIndex in this.formResult.algorithmParameterJson[itemIndex])
                         if(this.formResult.algorithmParameterJson[itemIndex][parameterIndex]=="" ||
                             this.formResult.algorithmParameterJson[itemIndex][parameterIndex]==null) return true;
+            return false
         }
     },
     mounted:function(){

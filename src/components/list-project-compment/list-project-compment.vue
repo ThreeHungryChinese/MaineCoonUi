@@ -8,7 +8,7 @@
             <md-button class="md-primary md-raised" @click="$emit('GoCreate')">Create first {{projectTypeName}}</md-button>
         </md-empty-state>
         <div v-if="projects!=null" class="md-alyout md-alignment-top-space-around">
-            <md-card class="md-layout-item md-gutter" v-for="project in projects" v-bind:key="project.Id">
+            <md-card class="md-layout-item md-gutter" v-for="project in projects" v-bind:key="project.id">
                 <md-card-header>
                     <div class="md-title">{{project.name}}</div>
                     <div class="md-subhead">Has been Called: {{project.count}} times</div>
@@ -27,9 +27,9 @@
                         </md-card-expand-trigger>
                         <div>
                             <md-button class="md-button md-primary md-raised" 
-                                @click="$emit('GoEdit',project.Id)">Edit</md-button>
+                                @click="$emit('GoEdit',project.id)">Edit</md-button>
                             <md-button class="md-button md-accent md-raised" 
-                                @click="showWarning=true">Delete</md-button>
+                                @click="showWarning=true;deleteingPrjoectId=project.id">Delete</md-button>
                         </div>
                     </md-card-actions>
                     <md-card-expand-content>
@@ -62,7 +62,7 @@
             content="This action cannot undo"
             confirmText="Comfirm"
             cancelText="Cancel"
-            @onConfirm="$emit('GoDelete',project.Id)"/>
+            @onConfirm="$emit('GoDelete',deleteingPrjoectId)"/>
     </div>
 </template>
 
@@ -73,7 +73,8 @@ export default {
     props:['projects','projectTypeName'],
     data:()=>({
         showWarning:false,
-        staticCountTemp:[]
+        staticCountTemp:[],
+        deleteingPrjoectId:null
     }),
     created:function(){
         const weekday = ['Sun','Mon','Tue','Wed','Thur','Fri','Sat'];

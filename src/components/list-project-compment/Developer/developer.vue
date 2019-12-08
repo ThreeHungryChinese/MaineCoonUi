@@ -15,16 +15,16 @@
             v-if="showEditProcessorDialog" 
             v-on:unshowDialog="showEditProcessorDialog=false" 
             v-on:actionOk="refreshContent();
-            this.$emit('notification','Your algorithm is saved.')"
+            $emit('notification','Your algorithm is saved.')"
             :id="editProcessorId" />
     </div>
 </template>
 
 <script>
 import EditCreateProcessorDialog from './edit-create-processor-dialog'
-import ListProjectCompment from './list-project-compment'
+import ListProjectCompment from '../list-project-compment'
 export default {
-    name:'list-processor-compment',
+    name:'developer',
     props:['user'],
     data:()=>({
         processors:null,
