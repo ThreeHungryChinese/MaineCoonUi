@@ -22,10 +22,13 @@
                             :sending="sending"
                             />
                     </md-step>
-                    <md-step id="third" md-label="Summary" >
-                        <setup-processor-flow
+                    <md-step id="third" md-label="Flow" >
+                        <!--setup-processor-flow
                             :ProgramJson.sync="formResult.ProgramJson"
-                        />
+                        /-->
+                        <setup-processor-graph
+                            :ProgramJson.sync="formResult.ProgramJson"
+                            :ProgramParameterJson="formResult.ProgramParameterJson"/>
                     </md-step>
                 </md-steppers>
             </md-dialog-content>
@@ -48,6 +51,7 @@ import { type } from 'os';
 const { required,url,requiredIf } = require('vuelidate/lib/validators')
 import ParameterEditTable from '../parameter-edit-table'
 import SetupProcessorFlow from './setup-processor-flow'
+import SetupProcessorGraph from './setup-processor-graph'
 export default {
     name:'edit-create-program-dialog',
     mixins: [validationMixin],
@@ -177,7 +181,7 @@ export default {
         }
     },
     components:{
-        ParameterEditTable,SetupProcessorFlow
+        ParameterEditTable,SetupProcessorFlow,SetupProcessorGraph
     }
 }
 </script>
