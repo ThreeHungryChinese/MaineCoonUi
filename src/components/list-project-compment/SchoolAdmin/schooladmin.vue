@@ -1,5 +1,5 @@
 <template>
-    <!--div>
+    <div>
         <md-empty-state
         v-if="programs==null"
         description="program"
@@ -25,13 +25,11 @@
             v-on:actionOk="refreshContent();
             $emit('notification','Your algorithm is saved.')"
             :id="editProgramId" />
-    </div-->
-    <setup-processor-graph/>
+    </div>
 </template>
 
 <script>
 import SetupProcessorGraph from './setup-processor-graph'
-
 import EditCreateProgramDialog from './edit-create-program-dialog'
 import ListProjectCompment from '../list-project-compment'
 export default {

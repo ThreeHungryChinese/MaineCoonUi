@@ -1,6 +1,6 @@
 <template>
       <div>
-        <md-dialog @md-closed="$emit('unshowDialog')" :md-active.sync="showDialog" style="width: 60vw;">
+        <md-dialog @md-closed="$emit('unshowDialog')" :md-active.sync="showDialog" style="min-width: 60vw;">
             <md-dialog-title>{{isEdit?'Edit':'New'}} Program</md-dialog-title>
             <md-dialog-content class="md-gutter">
                 <md-steppers md-alternative md-linear :md-active-step.sync="formControl.activatedStep" style="max-width:55vw" >
@@ -27,6 +27,7 @@
                             :ProgramJson.sync="formResult.ProgramJson"
                         /-->
                         <setup-processor-graph
+                            v-if="formControl.activatedStep=='third'"
                             :ProgramJson.sync="formResult.ProgramJson"
                             :ProgramParameterJson="formResult.ProgramParameterJson"/>
                     </md-step>
@@ -50,7 +51,6 @@ import { validationMixin } from 'vuelidate'
 import { type } from 'os';
 const { required,url,requiredIf } = require('vuelidate/lib/validators')
 import ParameterEditTable from '../parameter-edit-table'
-import SetupProcessorFlow from './setup-processor-flow'
 import SetupProcessorGraph from './setup-processor-graph'
 export default {
     name:'edit-create-program-dialog',
@@ -151,6 +151,16 @@ export default {
                     for(var parameterIndex in this.formResult.ProgramParameterJson[itemIndex])
                         if(this.formResult.ProgramParameterJson[itemIndex][parameterIndex]=="" ||
                             this.formResult.ProgramParameterJson[itemIndex][parameterIndex]==null) return true;
+            if(this.formControl.activatedStep=='third'){
+                var usedProcessorsId = new Map();
+                for(var i=1;i<this.formResult.ProgramJson.length;i++){
+                    usedProcessorsId.set(this.formResult.ProgramJson[i].processorId);
+                    for(var processor of this.formResult.ProgramJson[i].parameterValue.values())
+                        if(processor.fromNode==null)return true
+                }
+                this.formResult.usedProcessorsId = Array.from(usedProcessorsId.keys());
+            }
+        
             return false;
         }
     },
@@ -181,7 +191,7 @@ export default {
         }
     },
     components:{
-        ParameterEditTable,SetupProcessorFlow,SetupProcessorGraph
+        ParameterEditTable,SetupProcessorGraph
     }
 }
 </script>
