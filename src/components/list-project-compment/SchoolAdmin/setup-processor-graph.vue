@@ -1,7 +1,8 @@
 <template>
   <div>
     <div class="md-layout md-alignment-center-center">
-        <md-toolbar class="md-item md-layout md-alignment-center-center" style="width:50vw">
+        <div class="md-layout"/>
+        <md-toolbar class="md-item md-layout md-alignment-center-center md-size-40">
             <md-button 
                 class="md-icon-button md-raised" :class="currentCursorType=='mouse'?'md-dense md-primary':''"
                 :md-ripple="false"
@@ -26,6 +27,7 @@
                 <md-icon>add</md-icon>
             </md-button>
         </md-toolbar>
+        <div class="md-layout"/>
     </div>
     <d3-network 
     :net-nodes="nodes" :net-links="links" :options="options" :link-cb="lcb"
@@ -77,9 +79,7 @@
             <md-table-cell>
                 <md-field v-if="previousNode.id!=0">
                     <md-select 
-                        v-model="ProgramJson_temp[previousNode.id].parameterValue
-                        [ProgramJson_temp[previousNode.id].parameterValue[index].fromNode]
-                        .resultIndex" 
+                        v-model="ProgramJson_temp[previousNode.id].parameterValue[index].resultIndex" 
                         v-if="ProgramJson_temp[previousNode.id].parameterValue[index].fromNode==0">
                         <md-option v-for="(input,inputIndex) in ProgramJson_temp[0].algorithmParameterJson" :key="inputIndex" :value="inputIndex">
                             {{'[' + inputIndex + ']' + input.parameterName}}
@@ -279,9 +279,8 @@ export default {
         D3Network,SelectNewDialog
     },
     mounted:function(){
-        this.$emit('update:ProgramJson',this.ProgramJson_temp)
         this.ProgramJson_temp[0].algorithmParameterJson = this.ProgramParameterJson
-        if(this.ProgramJson!=null||this.ProgramJson.length>=2){
+        if(this.ProgramJson!=null&&this.ProgramJson.length>=2){
             this.ProgramJson_temp=this.ProgramJson;
         }
     },

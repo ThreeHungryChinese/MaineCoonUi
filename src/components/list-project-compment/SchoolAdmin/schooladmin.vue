@@ -11,13 +11,15 @@
         <list-project-compment
             :projects="programs"
             projectTypeName="Program"
-            @GoCreate="showCreateProcessorDialog=true"
+            @GoCreate="showCreateProgramDialog=true"
             @GoDelete="deleteProgram"
             @GoEdit="edit"
         />
         <edit-create-program-dialog 
             v-if="showCreateProgramDialog" 
             @unshowDialog="showCreateProgramDialog=false" 
+            v-on:actionOk="refreshContent();
+            $emit('notification','Your algorithm is saved.')"
             @actionOk="refreshContent" />
         <edit-create-program-dialog 
             v-if="showEditProgramDialog" 

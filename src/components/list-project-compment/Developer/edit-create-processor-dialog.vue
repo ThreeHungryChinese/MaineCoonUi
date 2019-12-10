@@ -1,6 +1,6 @@
 <template>
       <div>
-        <md-dialog @md-closed="$emit('unshowDialog')" :md-active.sync="showDialog" style="width: 60vw;">
+        <md-dialog @md-closed="$emit('unshowDialog')" :md-active.sync="showDialog" style="width: 80vw;">
             <md-dialog-title>{{isEdit?'Edit':'New'}} Algorithm</md-dialog-title>
             <md-dialog-content class="md-gutter">
                 <md-steppers md-alternative md-linear :md-active-step.sync="formControl.activatedStep" style="max-width:55vw" >

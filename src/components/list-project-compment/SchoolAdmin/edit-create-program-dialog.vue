@@ -1,9 +1,9 @@
 <template>
       <div>
-        <md-dialog @md-closed="$emit('unshowDialog')" :md-active.sync="showDialog" style="min-width: 60vw;">
+        <md-dialog @md-closed="$emit('unshowDialog')" :md-active.sync="showDialog" style="min-width: 80vw;">
             <md-dialog-title>{{isEdit?'Edit':'New'}} Program</md-dialog-title>
             <md-dialog-content class="md-gutter">
-                <md-steppers md-alternative md-linear :md-active-step.sync="formControl.activatedStep" style="max-width:55vw" >
+                <md-steppers md-alternative md-linear :md-active-step.sync="formControl.activatedStep" style="max-width:75vw" >
                     <md-step id="first" md-label="Basic Information" :md-done.sync="formControl.stepsReady.first">
                         <md-field v-for="(value, name) in formInfo.generateField" v-bind:key="name" :class="getValidationClass($v.formResult[name])">
                             <label :for="name">{{value.title}}</label>
@@ -87,7 +87,8 @@ export default {
             ProgramName:null,
             ProgramIntroduction:null,
             ProgramJson:[],
-            ProgramParameterJson:[]
+            ProgramParameterJson:[],
+            usedProcessorsId:[]
         }
     }),
     validations: {

@@ -38,7 +38,12 @@
           </div>
       </md-app-toolbar>
       <md-app-content>
-        <boot-screen v-if="!(user.isLoged)"></boot-screen>
+        <boot-screen v-if="!(user.isLoged)&&choosedBootScreen==0">
+          <boot-screen-text/>
+        </boot-screen>
+        <boot-screen-color v-if="!(user.isLoged)&&choosedBootScreen==1">
+          <boot-screen-text/>
+        </boot-screen-color>
         <developer :user="user" 
           v-if="user.isLoged && user.sysRole=='Developer'" 
           v-on:notification="showSnackBar" 
@@ -47,6 +52,10 @@
 
         <schooladmin :user="user"
           v-if="user.isLoged && user.sysRole=='SchoolAdmin'" 
+          @notification="showSnackBar"
+          />
+        <student :user="user"
+          v-if="user.isLoged && user.sysRole=='Student'" 
           @notification="showSnackBar"
           />
           
@@ -59,9 +68,12 @@
 
 <script>
 import BootScreen from './components/boot-screen'
+import BootScreenColor from './components/boot-screen-color'
+import BootScreenText from './components/boot-screen-text'
 import LoginCompment from './components/login-compment/login-compment'
 import Developer from './components/list-project-compment/Developer/developer'
 import Schooladmin from './components/list-project-compment/SchoolAdmin/schooladmin'
+import Student from './components/Student/student';
 export default {
   name: 'app',
   data:()=>({
@@ -78,13 +90,16 @@ export default {
       show:false,
       duration:4000
     },
-    deleting:false
+    choosedBootScreen:null,
   }),
   components: {
     BootScreen,
     LoginCompment,
     Developer,
-    Schooladmin
+    Schooladmin,
+    Student,
+    BootScreenColor,
+    BootScreenText
   },
   methods: {
     showSnackBar(info){ 
@@ -92,6 +107,9 @@ export default {
       this.snackBar.info=info;
     }
   },
+  mounted:function(){
+    this.choosedBootScreen = Math.floor(Math.random() * Math.floor(2));
+  }
 }
 </script>
 
