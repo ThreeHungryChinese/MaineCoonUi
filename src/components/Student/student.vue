@@ -55,7 +55,10 @@
                             <span class="md-error md-gutter" v-if="(parameterValue[index]==null || parameterValue[index]=='')">
                                 The {{value.parameterName}} is required.
                             </span>
-                            <md-file v-if="value.type=='file'" :name="'i'+ index" :id="'i' + index" v-model="parameterValue[index]" />
+                            <md-file 
+                                v-if="value.type=='file'" 
+                                :name="'i'+ index" :id="'i' + index" 
+                                @change="getfile(index,$event)"/>
                             <md-input v-else :name="'i'+ index" :id="'i' + index" v-model="parameterValue[index]" :type="value.type" />
                             <span class="md-helper-text">{{value.instruction}}</span>
                         </md-field>
@@ -64,8 +67,9 @@
                     <md-step id="forth" md-label="Get your Score!">
                         <md-empty-state
                             style="top:0"
-                            :md-icon="sending?'':send"
-                            :md-label="sending?'':'Your score is : ' + result">
+                            :md-icon="sending?'':'send'"
+                            :md-label="sending?'':'Your score is :'">
+                            <pre>{{result}}</pre>
                             <md-progress-spinner v-if="sending" :md-diameter="200" :md-stroke="20" md-mode="indeterminate"></md-progress-spinner>
                         </md-empty-state>
                     </md-step>
@@ -76,7 +80,7 @@
             <md-button class="md-raised md-primary floatright" :disabled="!isValid()" @click="nextStep()">
                 {{(formControl.activatedStep=='forth')?'Finish':'Continue'}}
             </md-button>
-            <md-button v-if="formControl.activatedStep!='forth'" class="md-accent" @click="$emit('unshowDialog')">Cancel</md-button>
+            <md-button v-if="formControl.activatedStep!='forth'" class="md-accent" @click="showDialog=false">Cancel</md-button>
             </md-dialog-actions>
         </md-dialog>
     </div>
@@ -99,6 +103,7 @@ const searchByName = (items, term) => {
 
 import BootScreen from '../../components/boot-screen'
 import BootScreenColor from '../../components/boot-screen-color'
+import { send } from 'q'
 export default {
     name:'student',
     props:['user'],
@@ -171,9 +176,18 @@ export default {
                         }
                     }
                 )
-                for(item of this.selectedProgramParmeters.keys()){
-                    this.parameterValue.push(null);
-                }
+                this.parameterValue.length = this.selectedProgramParmeters.length
+            }
+        },
+        getfile(index,e){
+            var files = e.target.files || e.dataTransfer.files;
+            if (files.length){
+                var fileReader = new FileReader()
+                fileReader.readAsBinaryString(files[0])
+                fileReader.onload = (e) => {
+                    console.log(e)
+                    this.parameterValue[index] = btoa(e.target.result);
+                };
             }
         },
         submit(){
@@ -183,7 +197,7 @@ export default {
                 programId : this.selectedProgram.id,
                 value : this.parameterValue
             }
-            f.Post('Quest/',studentInfo).then(r=>{
+            f.Post('Quests/',studentInfo).then(r=>{
                     if(!r.ok){
                         alert('error!')
                         this.$emit('update:showDialog',false)
@@ -197,6 +211,7 @@ export default {
                     }
                 }
             )
+            this.sending=false
         }
     },
     computed:{
