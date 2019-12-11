@@ -13,10 +13,10 @@
             </div>
         </boot-screen-color>
 
-        <md-dialog @md-closed="$emit('unshowDialog')" v-if="showDialog" :md-active.sync="showDialog" style="min-width:80vw">
-            <md-dialog-title>Start a net Admission</md-dialog-title>
+        <md-dialog @md-closed="$emit('unshowDialog')" v-if="showDialog" :md-active.sync="showDialog" class="md-size-80" >
+            <md-dialog-title>Start a new Admission</md-dialog-title>
             <md-dialog-content class="md-gutter">
-                <md-steppers md-alternative md-linear :md-active-step.sync="formControl.activatedStep">
+                <md-steppers md-dynamic-height md-alternative md-linear :md-active-step.sync="formControl.activatedStep" style="max-width:90vw">
                     <md-step id="first" md-label="Basic Information" >
                         <md-empty-state
                             style="top:0"
