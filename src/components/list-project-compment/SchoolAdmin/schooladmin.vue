@@ -77,9 +77,9 @@ export default {
            this.editProgramId=id;
            this.showEditProgramDialog=true;
        },
-       deleteProgram(){
+       deleteProgram(deletingProgramId){
            var f = new window.fetchApi.fetchApi();
-           var response = f.Delete('UniversityPrograms/'+this.deletingProgramId);
+           var response = f.Delete('UniversityPrograms/'+deletingProgramId);
                 response.then(r =>{
                     if(r.status==200){
                         this.$emit('notification',"Your program is deleted");
