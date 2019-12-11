@@ -13,7 +13,7 @@
             </div>
         </boot-screen-color>
 
-        <md-dialog @md-closed="$emit('unshowDialog')" v-if="showDialog" :md-active.sync="showDialog" style="width:80vw">
+        <md-dialog @md-closed="$emit('unshowDialog')" v-if="showDialog" :md-active.sync="showDialog" style="min-width:80vw">
             <md-dialog-title>Start a net Admission</md-dialog-title>
             <md-dialog-content class="md-gutter">
                 <md-steppers md-alternative md-linear :md-active-step.sync="formControl.activatedStep">

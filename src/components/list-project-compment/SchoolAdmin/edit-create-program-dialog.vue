@@ -173,7 +173,6 @@ export default {
             f.Get('UniversityPrograms/Details/' + this.id).then(r=>{
                 if(!r.ok){
                     alert("error occured!");
-                    //console.log('fetch Error!');
                     this.$emit('unShowDialog');
                 }
                 else{
