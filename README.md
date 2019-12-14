@@ -1,6 +1,7 @@
 # MaineCoonUi
 ## Introductions
  A user Interface based on Vue.js
+ 
 ![Vue logo](/readme/logo.png)
 ### features
 * Material Design User Interface
@@ -29,15 +30,15 @@ In the Edit/Create dialog's third step, there is something like this
 
 ![flow](/readme/flow.jpg)
 
-As you can see, there are bubbles (*We call it dots*) on your screen. Blue dots represents your Programs input which get from student's input and the output score of this flow. So this means the input dots must have a pointer to others and the output must be pointed from other dots.
+* As you can see, there are bubbles (*We call it dots*) on users screen. Blue dots represents this Programs' input which get from student's input and the output score of this flow. So this means the input dots must have a pointer to others and the output must be pointed from other dots.
 
-Other dots means a algorithm provided by developers. Users can click the add button in the top toobar to and a dot or delete button, then click a dot to delete one.
+* Other dots means a algorithm provided by developers. Users can click the add button in the top toobar to and a dot or delete button, then click a dot to delete one.
 
-If you click a dot, its input setting table will show on the below. And the dot's color will change to orange, which shows this dot is selected.
+* If a user click a dot, its input setting table will show on the below. And the dot's color will change to orange, which shows this dot is selected.
 
-Once you set all the input of a algorithm, it will change to green, which means this dot is set correctly.
+* Once a user set all the input of a algorithm, it will change to green, which means this dot is set correctly.
 
-All dots are dragable, so if one are setting a huge data flow, they will find this feature is really useful.
+* All dots are dragable, so if one are setting a huge data flow, they will find this feature is really useful.
 
 #### For School Adminisator
 
@@ -75,14 +76,14 @@ Check https://www.npmjs.com/get-npm to get instructions about how to install it 
 #### Third: Launch Vue-Cli
 Clone this repo.
 
-To open this project, you just change your current dictionary of your terminal to the repo's root dictionary
+To open this project, please just change your current dictionary of your terminal to the repo's root dictionary
 
 And then,
 
 `vue ui`
 
 ### Deploy on your own server
-Install a web server, like Apache || Nginx || IIS. Configure it to <ro>
+need a web server, like Apache || Nginx || IIS.
 
 just link the index.html will not work since browser's CROS policy may block some essential resources.
 
