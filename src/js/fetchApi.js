@@ -1,5 +1,6 @@
 class fetchApi{
     apiAddress = 'https://silverlobster.onic.xyz/';
+    //apiAddress = 'https://localhost:5001/';
     fetchApi(addressString){
         this.apiAddress=addressString;
     }

@@ -1,13 +1,13 @@
 <template>
     <div>
-        <md-empty-state
+        <!--md-empty-state
         v-if="programs==null"
         description="program"
         md-icon="devices_other"
         md-label="Create your first program"
         md-description="Creating program, you'll be able to do something.">
             <md-button class="md-primary md-raised" @click="showCreateProgramDialog=true">Create first program</md-button>
-        </md-empty-state>
+        </md-empty-state -->
         <list-project-compment
             :projects="programs"
             projectTypeName="Program"
