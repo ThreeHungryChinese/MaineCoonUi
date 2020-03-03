@@ -25,6 +25,16 @@ After login the system, UI will look like this
 ![developer](/readme/developer.png)
 
 Try it by clicking edit & New & Delete Button
+
+
+#### For School Adminisator
+
+After login the system, UI will look like this
+
+![schooladmin](/readme/schooladmin.png)
+
+Try it by clicking edit & New & Delete Button.
+
 ##### Set up program's data flow
 In the Edit/Create dialog's third step, there is something like this
 
@@ -39,14 +49,6 @@ In the Edit/Create dialog's third step, there is something like this
 * Once a user set all the input of a algorithm, it will change to green, which means this dot is set correctly.
 
 * All dots are dragable, so if one are setting a huge data flow, they will find this feature is really useful.
-
-#### For School Adminisator
-
-After login the system, UI will look like this
-
-![schooladmin](/readme/schooladmin.png)
-
-Try it by clicking edit & New & Delete Button.
 
 #### For Student
 After login the system, UI will look like this
